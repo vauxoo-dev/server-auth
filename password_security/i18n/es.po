@@ -19,7 +19,7 @@ msgstr ""
 #. module: password_security
 #: model:ir.model.fields,help:password_security.field_res_company_password_minimum
 msgid "Amount of hours until a user may change password again"
-msgstr ""
+msgstr "Número de horas antes que un usuario pueda cambiar la contraseña"
 
 #. module: password_security
 #: code:addons/password_security/models/res_users.py:145
@@ -30,7 +30,7 @@ msgstr "No se puede utilizar una de las %d contraseñas más recientes"
 #. module: password_security
 #: model:ir.model.fields,field_description:password_security.field_res_company_password_length
 msgid "Characters"
-msgstr "caracteres"
+msgstr "Caracteres"
 
 #. module: password_security
 #: model:ir.model,name:password_security.model_res_company
@@ -69,7 +69,7 @@ msgstr ""
 #. module: password_security
 #: model:ir.model.fields,field_description:password_security.field_res_users_pass_history_display_name
 msgid "Display Name"
-msgstr "Nombre mostrado"
+msgstr "Nombre Mostrado"
 
 #. module: password_security
 #: model:ir.model.fields,field_description:password_security.field_res_users_pass_history_password_crypt
@@ -114,7 +114,7 @@ msgstr "Última actualización en"
 #. module: password_security
 #: model:ir.model.fields,field_description:password_security.field_res_users_password_write_date
 msgid "Last password update"
-msgstr "ültima actualización de contraseña"
+msgstr "Última actualización de contraseña"
 
 #. module: password_security
 #: model:ir.model.fields,field_description:password_security.field_res_company_password_lower
@@ -168,7 +168,7 @@ msgstr "Política de Contraseñas"
 #: code:addons/password_security/models/res_users.py:62
 #, python-format
 msgid "Password must be %d characters or more."
-msgstr "La contraseña debe contener al menos %d caracteres."
+msgstr "La contraseña debe ser de al menos %d caracteres."
 
 #. module: password_security
 #: code:addons/password_security/models/res_users.py:121
@@ -177,8 +177,8 @@ msgid ""
 "Passwords can only be reset every %d hour(s). Please contact an "
 "administrator for assistance."
 msgstr ""
-"Las contraseñas pueden ser reestablecidas solo cada %d hora(s). Por favor contacte un "
-"administrador para ayuda."
+"Las contraseñas pueden ser reestablecidas sólo cada %d hora(s). Por favor contacte un "
+"administrador para asistencia."
 
 #. module: password_security
 #: model:ir.model.fields,help:password_security.field_res_company_password_lower
