@@ -10,7 +10,8 @@ import saml2
 from saml2.client import Saml2Client
 from saml2.config import Config as Saml2Config
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -144,9 +145,12 @@ class AuthSamlProvider(models.Model):
             limit=1,
         )
 
-        attachment_location = self.env["ir.config_parameter"].sudo().get_param(
-            "ir_attachment.location", "file")
-        if attachment_location != 'file':
+        attachment_location = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("ir_attachment.location", "file")
+        )
+        if attachment_location != "file":
             keys._save_to_file_system()
         keys_path = self.env["ir.attachment"]._full_path(keys.store_fname)
 
@@ -175,6 +179,8 @@ class AuthSamlProvider(models.Model):
             },
             "cert_file": keys_path,
             "key_file": keys_path,
+            "xmlsec_binary": "/usr/bin/xmlsec1",
+            "encryption_keypairs": [{"key_file": keys_path, "cert_file": keys_path}],
         }
         spConfig = Saml2Config()
         spConfig.load(settings)
@@ -230,6 +236,14 @@ class AuthSamlProvider(models.Model):
         )
 
         matching_value = None
+
+        if not response.session_info():
+            _logger.error("No session for user %s", response.session_info())
+            raise UserError(
+                _(
+                    "Can't establish session with ADFS, please review user on AD and claim rules for this relying party trust."
+                )
+            )
 
         if self.matching_attribute == "subject.nameId":
             matching_value = response.name_id.text
@@ -292,9 +306,12 @@ class AuthSamlProvider(models.Model):
             limit=1,
         )
 
-        attachment_location = self.env["ir.config_parameter"].sudo().get_param(
-            "ir_attachment.location", "file")
-        if attachment_location != 'file':
+        attachment_location = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("ir_attachment.location", "file")
+        )
+        if attachment_location != "file":
             keys._save_to_file_system()
         keys_path = self.env["ir.attachment"]._full_path(keys.store_fname)
 
