@@ -154,11 +154,11 @@ class ResUser(models.Model):
         to_remove_password = self.filtered(
             lambda rec: rec.id != SUPERUSER_ID
             and rec.saml_uid
-            and not rec.password
+            and rec.password
         )
         if to_remove_password:
             to_remove_password.write(
-                {"password": gen_password(length=20)}
+                {"password": False}
             )
 
     def write(self, vals):
