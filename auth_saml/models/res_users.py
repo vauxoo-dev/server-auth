@@ -163,7 +163,9 @@ class ResUser(models.Model):
 
     def write(self, vals):
         result = super().write(vals)
-        if not vals.get('password'):
+        # CHECK: avoid change password when update user.
+        # in multi-company env, user change his company and this change gis passwd then Odoo logout it.
+        if vals.get('password'):
             self._autoremove_password_if_saml()
         self._ensure_saml_token_exists()
         return result
