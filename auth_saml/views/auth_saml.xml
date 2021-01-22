@@ -1,4 +1,3 @@
-<?xml version="1.0" ?>
 <odoo>
     <!-- login form button -->
     <template id="providers" name="Auth SAML Providers">
@@ -69,7 +68,7 @@
                             </div>
                             <field name="matching_attribute_to_lower" />
 
-                            <field name="idp_allow_unsolicited"/>
+                            <field name="idp_allow_unsolicited" />
                         </group>
                         <group string="Odoo Settings">
                             <label for="sp_baseurl" />

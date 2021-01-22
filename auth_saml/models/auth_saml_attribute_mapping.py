@@ -9,12 +9,21 @@ class AuthSamlAttributeMapping(models.Model):
     _name = "auth.saml.attribute.mapping"
     _description = "SAML2 attribute mapping"
 
-    provider_id = fields.Many2one("auth.saml.provider", index=True, required=True,)
+    provider_id = fields.Many2one(
+        "auth.saml.provider",
+        index=True,
+        required=True,
+    )
 
-    attribute_name = fields.Char(string="IDP Response Attribute", required=True,)
+    attribute_name = fields.Char(
+        string="IDP Response Attribute",
+        required=True,
+    )
 
     field_name = fields.Selection(
-        string="Odoo Field", selection="_field_name_selection", required=True,
+        string="Odoo Field",
+        selection="_field_name_selection",
+        required=True,
     )
 
     @api.model
