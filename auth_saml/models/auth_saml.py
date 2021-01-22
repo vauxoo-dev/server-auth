@@ -10,7 +10,7 @@ import saml2
 from saml2.client import Saml2Client
 from saml2.config import Config as Saml2Config
 
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -54,7 +54,9 @@ class AuthSamlProvider(models.Model):
     )
 
     sp_metadata_url = fields.Char(
-        compute="_compute_sp_metadata_url", string="Metadata URL", readonly=True,
+        compute="_compute_sp_metadata_url",
+        string="Metadata URL",
+        readonly=True,
     )
 
     matching_attribute = fields.Char(
@@ -74,7 +76,9 @@ class AuthSamlProvider(models.Model):
     )
 
     attribute_mapping_ids = fields.One2many(
-        "auth.saml.attribute.mapping", "provider_id", string="Attribute Mapping",
+        "auth.saml.attribute.mapping",
+        "provider_id",
+        string="Attribute Mapping",
     )
 
     active = fields.Boolean(default=True)

@@ -3,20 +3,25 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import logging
+import os
 
 import passlib
-import os
 
 from odoo import SUPERUSER_ID, _, api, fields, models, tools
 from odoo.exceptions import AccessDenied, ValidationError
 
 _logger = logging.getLogger(__name__)
 
-def gen_password(length=8, charset="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()"):
+
+def gen_password(
+    length=8,
+    charset="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()",
+):
     random_bytes = os.urandom(length)
     len_charset = len(charset)
     indices = [int(len_charset * (byte / 256.0)) for byte in random_bytes]
     return "".join([charset[index] for index in indices])
+
 
 class ResUser(models.Model):
     """
@@ -25,8 +30,14 @@ class ResUser(models.Model):
 
     _inherit = "res.users"
 
-    saml_provider_id = fields.Many2one("auth.saml.provider", string="SAML Provider",)
-    saml_uid = fields.Char("SAML User ID", help="SAML Provider user_id",)
+    saml_provider_id = fields.Many2one(
+        "auth.saml.provider",
+        string="SAML Provider",
+    )
+    saml_uid = fields.Char(
+        "SAML User ID",
+        help="SAML Provider user_id",
+    )
 
     @api.constrains("password", "saml_uid")
     def check_no_password_with_saml(self):
@@ -59,7 +70,7 @@ class ResUser(models.Model):
         return p._validate_auth_response(token)
 
     def _auth_saml_signin(self, provider, validation, saml_response):
-        """ retrieve and sign into openerp the user corresponding to provider
+        """retrieve and sign into openerp the user corresponding to provider
         and validated access token
 
             :param provider: saml provider id (int)
@@ -76,7 +87,11 @@ class ResUser(models.Model):
             [("saml_uid", "=", saml_uid), ("saml_provider_id", "=", provider)]
         )
         if len(user) != 1:
-            _logger.info("Could not find matching saml user for '%s' against provider %d", saml_uid, provider)
+            _logger.info(
+                "Could not find matching saml user for '%s' against provider %d",
+                saml_uid,
+                provider,
+            )
             raise AccessDenied()
         # now find if a token for this user/provider already exists
         token_ids = token_osv.search(
@@ -152,20 +167,16 @@ class ResUser(models.Model):
         if self._allow_saml_and_password():
             return
         to_remove_password = self.filtered(
-            lambda rec: rec.id != SUPERUSER_ID
-            and rec.saml_uid
-            and rec.password
+            lambda rec: rec.id != SUPERUSER_ID and rec.saml_uid and rec.password
         )
         if to_remove_password:
-            to_remove_password.write(
-                {"password": False}
-            )
+            to_remove_password.write({"password": False})
 
     def write(self, vals):
         result = super().write(vals)
         # CHECK: avoid change password when update user.
         # in multi-company env, user change his company and this change gis passwd then Odoo logout it.
-        if vals.get('password'):
+        if vals.get("password"):
             self._autoremove_password_if_saml()
         self._ensure_saml_token_exists()
         return result
