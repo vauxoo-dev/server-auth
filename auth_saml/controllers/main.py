@@ -61,7 +61,7 @@ class SAMLLogin(Home):
         return providers
 
     @http.route()
-    def web_login(self, *args, **kw):
+    def web_login(self, redirect=None, **kw):
         ensure_db()
         if (
             request.httprequest.method == "GET"
@@ -74,7 +74,7 @@ class SAMLLogin(Home):
 
         providers = self.list_providers()
 
-        response = super().web_login(*args, **kw)
+        response = super().web_login(redirect=redirect, **kw)
         if response.is_qweb:
             error = request.params.get("saml_error")
             if error == "no-signup":

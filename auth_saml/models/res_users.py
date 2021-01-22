@@ -30,14 +30,8 @@ class ResUser(models.Model):
 
     _inherit = "res.users"
 
-    saml_provider_id = fields.Many2one(
-        "auth.saml.provider",
-        string="SAML Provider",
-    )
-    saml_uid = fields.Char(
-        "SAML User ID",
-        help="SAML Provider user_id",
-    )
+    saml_provider_id = fields.Many2one("auth.saml.provider", string="SAML Provider",)
+    saml_uid = fields.Char("SAML User ID", help="SAML Provider user_id",)
 
     @api.constrains("password", "saml_uid")
     def check_no_password_with_saml(self):
@@ -134,7 +128,7 @@ class ResUser(models.Model):
         # return user credentials
         return self.env.cr.dbname, login, saml_response
 
-    def _check_credentials(self, token):
+    def _check_credentials(self, token, env):
         """Override to handle SAML auths.
 
         The token can be a password if the user has used the normal form...
@@ -143,7 +137,7 @@ class ResUser(models.Model):
         """
         try:
             # Attempt a regular login (via other auth addons) first.
-            super(ResUser, self)._check_credentials(token)
+            super(ResUser, self)._check_credentials(token, env)
 
         except (AccessDenied, passlib.exc.PasswordSizeError):
             # since normal auth did not succeed we now try to find if the user
