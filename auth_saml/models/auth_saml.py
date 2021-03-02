@@ -149,13 +149,6 @@ class AuthSamlProvider(models.Model):
             limit=1,
         )
 
-        attachment_location = (
-            self.env["ir.config_parameter"]
-            .sudo()
-            .get_param("ir_attachment.location", "file")
-        )
-        if attachment_location != "file":
-            keys._save_to_file_system()
         keys_path = self.env["ir.attachment"]._full_path(keys.store_fname)
 
         settings = {
