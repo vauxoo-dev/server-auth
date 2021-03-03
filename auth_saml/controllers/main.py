@@ -54,7 +54,11 @@ def fragment_to_query_string(func):
 
 class SAMLLogin(Home):
     def list_providers(self):
-        providers = request.env["auth.saml.provider"].sudo().search_read([])
+        providers = (
+            request.env["auth.saml.provider"]
+            .sudo()
+            .search_read(domain=[("sp_pem", "!=", False)])
+        )
         for provider in providers:
             # Compatibility with auth_oauth/controllers/main.py in order to
             # avoid KeyError rendering template_auth_oauth_providers
