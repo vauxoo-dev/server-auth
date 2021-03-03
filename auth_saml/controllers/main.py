@@ -7,6 +7,7 @@ import json
 import logging
 
 import werkzeug.utils
+from werkzeug.urls import url_quote_plus
 
 import odoo
 from odoo import SUPERUSER_ID, _, api, http, registry as registry_get
@@ -115,7 +116,7 @@ class AuthSAMLController(http.Controller):
             )
 
         state = {
-            "r": werkzeug.url_quote_plus(redirect),
+            "r": url_quote_plus(redirect),
         }
         return state
 
