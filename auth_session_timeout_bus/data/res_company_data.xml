@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo noupdate="1">
+
+    <record id="base.main_company" model="res.company">
+        <field name="state_id" ref="base.state_mx_df" />
+        <field name="country_id" ref="base.mx" />
+        <field name="logo" type="base64" file="auth_session_timeout_bus/static/img/logo.png" />
+        <field name="l10n_mx_edi_fiscal_regime">601</field>
+    </record>
+
+</odoo>

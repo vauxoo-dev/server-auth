@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo noupdate="1">
+
+    <record id="data_res_partner_invoice_address_auth_session_timeout_bus" model="res.partner">
+        <field name="type">invoice</field>
+        <field name="parent_id" ref="base.main_partner" />
+        <field name="state_id" ref="base.state_mx_df" />
+        <field name="country_id" ref="base.mx" />
+    </record>
+
+</odoo>
