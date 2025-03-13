@@ -244,6 +244,9 @@ class AuthSamlProvider(models.Model):
             "cert_file": self._get_cert_key_path("sp_pem_public"),
             "key_file": self._get_cert_key_path("sp_pem_private"),
         }
+        settings["encryption_keypairs"] = [
+            {"key_file": settings["key_file"], "cert_file": settings["cert_file"]}
+        ]
         try:
             sp_config = Saml2Config()
             sp_config.load(settings)
