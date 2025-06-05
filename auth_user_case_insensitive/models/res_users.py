@@ -15,7 +15,7 @@ class ResUsers(models.Model):
     def _login(cls, db, login, password, user_agent_env):
         """Overload _login to lowercase the `login` before passing to the
         super."""
-        login = login.lower()
+        login = login.strip().lower()
         return super(ResUsers, cls)._login(
             db, login, password, user_agent_env=user_agent_env
         )
@@ -24,11 +24,11 @@ class ResUsers(models.Model):
     def create(self, vals_list):
         """Overload create multiple to lowercase login."""
         for val in vals_list:
-            val["login"] = val.get("login", "").lower()
+            val["login"] = val.get("login", "").strip().lower()
         return super(ResUsers, self).create(vals_list)
 
     def write(self, vals):
         """Overload write to lowercase login."""
         if vals.get("login"):
-            vals["login"] = vals["login"].lower()
+            vals["login"] = vals["login"].strip().lower()
         return super(ResUsers, self).write(vals)
