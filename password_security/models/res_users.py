@@ -48,7 +48,8 @@ class ResUsers(models.Model):
 
     def _check_password_policy(self, passwords):
         result = super(ResUsers, self)._check_password_policy(passwords)
-
+        if self.env.context.get("install_module"):
+            return result
         for password in passwords:
             if not password:
                 continue
