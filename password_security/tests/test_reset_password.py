@@ -91,3 +91,43 @@ class TestPasswordSecurityReset(HttpCase):
         self.assertFalse(self.env.user._is_admin())
         with self.assertRaises(UserError):
             self.env["res.users"].reset_password("demo")
+
+    def test_04_reset_password_with_token(self):
+        """It should reset the password when a signup token is provided
+
+        Regression test: in 19.0 auth_signup.do_signup() gained a ``do_login``
+        parameter, and web_auth_reset_password() calls it as
+        ``self.do_signup(qcontext, do_login=False)``. An override keeping the
+        old two-argument signature raises TypeError, breaking every password
+        reset and every signup that goes through a token.
+        """
+        # Disable check on Minimum Hours so the reset is not blocked by it
+        self.env["ir.config_parameter"].sudo().set_param(
+            "password_security.minimum_hours", 0
+        )
+
+        user = self.env["res.users"].search([("login", "=", "jackoneill")])
+        user.partner_id.signup_prepare(signup_type="reset")
+        token = user.partner_id.sudo()._generate_signup_token()
+        self.assertTrue(token, "The signup token should have been generated")
+
+        new_password = "!asdQWE12345_4"
+        self.session = http.root.session_store.new()
+        self.opener = Opener(self)
+        self.opener.cookies.set("session_id", self.session.sid, domain=HOST, path="/")
+
+        with mock.patch("odoo.http.db_filter") as db_filter:
+            db_filter.side_effect = lambda dbs, host=None: [get_db_name()]
+            response = self.url_open(
+                "/web/reset_password",
+                data={
+                    "token": token,
+                    "login": "jackoneill",
+                    "password": new_password,
+                    "confirm_password": new_password,
+                    "csrf_token": http.Request.csrf_token(self),
+                },
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Your password has been reset successfully.", response.text)
