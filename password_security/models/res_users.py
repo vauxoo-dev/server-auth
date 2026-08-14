@@ -6,7 +6,7 @@
 import re
 from datetime import datetime, timedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 
@@ -21,6 +21,7 @@ class ResUsers(models.Model):
         "Last password update", default=fields.Datetime.now, readonly=True
     )
     password_history_ids = fields.One2many(
+        string="Password History",
         comodel_name="res.users.pass.history",
         inverse_name="user_id",
         readonly=True,
@@ -82,26 +83,27 @@ class ResUsers(models.Model):
         pwd_params = self._get_all_password_params()
         if pwd_params["lower"]:
             message.append(
-                self.env._("\n* Lowercase letter (at least %s characters)", pwd_params["lower"])
+                _("\n* Lowercase letter (at least %s characters)") % pwd_params["lower"]
             )
         if pwd_params["upper"]:
             message.append(
-                self.env._("\n* Uppercase letter (at least %s characters)", pwd_params["upper"])
+                _("\n* Uppercase letter (at least %s characters)") % pwd_params["upper"]
             )
         if pwd_params["numeric"]:
             message.append(
-                self.env._("\n* Numeric digit (at least %s characters)", pwd_params["numeric"])
+                _("\n* Numeric digit (at least %s characters)") % pwd_params["numeric"]
             )
         if pwd_params["special"]:
             message.append(
-                self.env._("\n* Special character (at least %s characters)", pwd_params["special"])
+                _("\n* Special character (at least %s characters)")
+                % pwd_params["special"]
             )
         if message:
-            message = [self.env._("Must contain the following:")] + message
+            message = [_("Must contain the following:")] + message
 
         if pwd_params["minlength"]:
             message = [
-                self.env._("Password must be %d characters or more.", pwd_params["minlength"])
+                _("Password must be %d characters or more.") % pwd_params["minlength"]
             ] + message
         return "\r".join(message)
 
@@ -157,9 +159,11 @@ class ResUsers(models.Model):
             delta = timedelta(hours=pwd_params["minimum_hours"])
             if write_date + delta > datetime.now():
                 raise UserError(
-                    self.env._(
+                    _(
                         "Passwords can only be reset every %d hour(s). "
-                        "Please contact an administrator for assistance.", pwd_params["minimum_hours"])
+                        "Please contact an administrator for assistance."
+                    )
+                    % pwd_params["minimum_hours"]
                 )
         return True
 
@@ -182,7 +186,7 @@ class ResUsers(models.Model):
                 lambda r: crypt.verify(password, r.password_crypt)
             ):
                 raise UserError(
-                    self.env._("Cannot use the most recent %d passwords", pwd_params["history"])
+                    _("Cannot use the most recent %d passwords") % pwd_params["history"]
                 )
 
     def _set_encrypted_password(self, uid, pw):
@@ -201,7 +205,8 @@ class ResUsers(models.Model):
         """Disallow password resets inside of Minimum Hours"""
         if not self.env.context.get("install_mode") and not self.env.context.get(
             "create_user"
-        ) and not self.env.user._is_admin():
-            users = self.filtered(lambda user: user.active)
-            users._validate_pass_reset()
+        ):
+            if not self.env.user._is_admin():
+                users = self.filtered(lambda user: user.active)
+                users._validate_pass_reset()
         return super().action_reset_password()

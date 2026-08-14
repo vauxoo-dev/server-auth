@@ -11,6 +11,7 @@ class ResUsersPassHistory(models.Model):
     _order = "user_id, date desc, id desc"
 
     user_id = fields.Many2one(
+        string="User",
         comodel_name="res.users",
         ondelete="cascade",
         index=True,
