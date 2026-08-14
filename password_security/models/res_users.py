@@ -82,26 +82,37 @@ class ResUsers(models.Model):
         pwd_params = self._get_all_password_params()
         if pwd_params["lower"]:
             message.append(
-                self.env._("\n* Lowercase letter (at least %s characters)", pwd_params["lower"])
+                self.env._(
+                    "\n* Lowercase letter (at least %s characters)", pwd_params["lower"]
+                )
             )
         if pwd_params["upper"]:
             message.append(
-                self.env._("\n* Uppercase letter (at least %s characters)", pwd_params["upper"])
+                self.env._(
+                    "\n* Uppercase letter (at least %s characters)", pwd_params["upper"]
+                )
             )
         if pwd_params["numeric"]:
             message.append(
-                self.env._("\n* Numeric digit (at least %s characters)", pwd_params["numeric"])
+                self.env._(
+                    "\n* Numeric digit (at least %s characters)", pwd_params["numeric"]
+                )
             )
         if pwd_params["special"]:
             message.append(
-                self.env._("\n* Special character (at least %s characters)", pwd_params["special"])
+                self.env._(
+                    "\n* Special character (at least %s characters)",
+                    pwd_params["special"],
+                )
             )
         if message:
             message = [self.env._("Must contain the following:")] + message
 
         if pwd_params["minlength"]:
             message = [
-                self.env._("Password must be %d characters or more.", pwd_params["minlength"])
+                self.env._(
+                    "Password must be %d characters or more.", pwd_params["minlength"]
+                )
             ] + message
         return "\r".join(message)
 
@@ -159,7 +170,9 @@ class ResUsers(models.Model):
                 raise UserError(
                     self.env._(
                         "Passwords can only be reset every %d hour(s). "
-                        "Please contact an administrator for assistance.", pwd_params["minimum_hours"])
+                        "Please contact an administrator for assistance.",
+                        pwd_params["minimum_hours"],
+                    )
                 )
         return True
 
@@ -182,7 +195,9 @@ class ResUsers(models.Model):
                 lambda r: crypt.verify(password, r.password_crypt)
             ):
                 raise UserError(
-                    self.env._("Cannot use the most recent %d passwords", pwd_params["history"])
+                    self.env._(
+                        "Cannot use the most recent %d passwords", pwd_params["history"]
+                    )
                 )
 
     def _set_encrypted_password(self, uid, pw):
