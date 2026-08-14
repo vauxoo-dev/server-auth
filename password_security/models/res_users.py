@@ -136,7 +136,7 @@ class ResUsers(models.Model):
             "(?=.*?[A-Z]){" + str(pwd_params["upper"]) + ",}",
             "(?=.*?\\d){" + str(pwd_params["numeric"]) + ",}",
             r"(?=.*?[\W_]){" + str(pwd_params["special"]) + ",}",
-            ".{%d,}$" % pwd_params["minlength"],
+            ".{" + str(pwd_params["minlength"]) + ",}$",
         ]
         if not re.search("".join(password_regex), password):
             raise ValidationError(self.password_match_message())
