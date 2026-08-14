@@ -83,19 +83,22 @@ class ResUsers(models.Model):
         if pwd_params["lower"]:
             message.append(
                 self.env._(
-                    "\n* Lowercase letter (at least %s characters)", pwd_params["lower"]
+                    "\n* Lowercase letter (at least %s characters)",
+                    pwd_params["lower"],
                 )
             )
         if pwd_params["upper"]:
             message.append(
                 self.env._(
-                    "\n* Uppercase letter (at least %s characters)", pwd_params["upper"]
+                    "\n* Uppercase letter (at least %s characters)",
+                    pwd_params["upper"],
                 )
             )
         if pwd_params["numeric"]:
             message.append(
                 self.env._(
-                    "\n* Numeric digit (at least %s characters)", pwd_params["numeric"]
+                    "\n* Numeric digit (at least %s characters)",
+                    pwd_params["numeric"],
                 )
             )
         if pwd_params["special"]:
@@ -111,7 +114,8 @@ class ResUsers(models.Model):
         if pwd_params["minlength"]:
             message = [
                 self.env._(
-                    "Password must be %d characters or more.", pwd_params["minlength"]
+                    "Password must be %d characters or more.",
+                    pwd_params["minlength"],
                 )
             ] + message
         return "\r".join(message)
@@ -196,7 +200,8 @@ class ResUsers(models.Model):
             ):
                 raise UserError(
                     self.env._(
-                        "Cannot use the most recent %d passwords", pwd_params["history"]
+                        "Cannot use the most recent %d passwords",
+                        pwd_params["history"],
                     )
                 )
 
